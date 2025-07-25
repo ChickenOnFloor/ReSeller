@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as faSolidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as faRegularHeart } from '@fortawesome/free-regular-svg-icons';
-
+import { API_URL } from '../api';
 const Card = ({ product }) => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
@@ -21,7 +21,7 @@ const Card = ({ product }) => {
     if (likeLoading) return;
     setLikeLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${product._id}/like`, {
+      const res = await fetch(`${API_URL}/products/${product._id}/like`, {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer ' + token,
@@ -38,9 +38,8 @@ const Card = ({ product }) => {
 
   if (!product) return null;
   return (
-    <div className="w-full h-72 max-h-72 border rounded-md overflow-hidden shadow-lg bg-gray-50 flex flex-col">
+    <div className="w-full h-72 max-h-72 border rounded-md overflow-hidden shadow-lg shadow-gray-400 bg-gray-50 flex flex-col">
       <div className="w-full h-32 relative">
-        {/* Status badge */}
         {product.sold ? (
           <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded shadow z-10">Sold</span>
         ) : (
@@ -65,8 +64,7 @@ const Card = ({ product }) => {
           <button
             className={`h-full px-2 flex items-center justify-center rounded ${liked ? 'text-red-500' : 'text-gray-400'} ${likeLoading ? 'opacity-50' : ''}`}
             onClick={handleLike}
-            disabled={likeLoading}
-            title={user ? (liked ? 'Unlike' : 'Like') : 'Login to like'}
+            disabled={likeLoading || (user && product.seller === user.id)}
           >
             <FontAwesomeIcon icon={liked ? faSolidHeart : faRegularHeart} size="lg" />
             <span className="ml-1 text-xs">{likesCount}</span>

@@ -21,4 +21,5 @@ const fileFilter = (req, file, cb) => {
 };
 
 export const upload = multer({ storage, fileFilter });
-export const uploadAvatar = multer({ storage: multer.memoryStorage(), fileFilter }); 
+export const uploadAvatar = multer({ storage: multer.memoryStorage(), fileFilter });
+export const uploadMemory = multer({ storage: multer.memoryStorage(), fileFilter }); 

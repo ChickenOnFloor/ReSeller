@@ -176,7 +176,7 @@ const Product = () => {
         <div className='w-full md:w-[50%] flex flex-col gap-4'>
           <div className='p-4 w-full flex flex-col justify-between border border-gray-200 rounded-lg bg-gray-50 shadow'>
             <div className='flex gap-3 justify-start items-center border border-gray-200 rounded p-2 bg-white'>
-              <img src={product.seller?.avatar || 'https://unchainedcrypto.com/wp-content/uploads/2023/07/pfp-nft.png'} alt="" className='object-cover rounded-full w-12 h-12'/>
+              <img src={product.seller?.avatar || '/defaultAvatar.png'} alt="" className='object-cover rounded-full w-12 h-12'/>
               <h1 className='text-md font-semibold'>{product.seller?.name || 'Seller'}</h1>
             </div>
             <button

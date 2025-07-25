@@ -90,7 +90,7 @@ const Home = () => {
             onClick={() => setSortDropdown(!sortDropdown)}
           >
             <span className='truncate'>Sort By: {sortOptions.find(opt => opt.value === sortInput)?.label || 'Sort'}</span>
-            <FontAwesomeIcon icon={faCaretDown} className='absolute right-1 text-black' />
+            <FontAwesomeIcon icon={faCaretDown} className={`absolute right-1 text-black ${sortDropdown ? 'rotate-180' : ''}`} />
           </div>
           {sortDropdown && (
           <div className='absolute mt-10 md:static md:mt-0 w-[140px] md:w-full border border-gray-300 rounded bg-white text-sm poetsen overflow-hidden z-20'>
@@ -116,7 +116,7 @@ const Home = () => {
             onClick={() => setCategoryDropdown(!categoryDropdown)}
           >
             <span className='truncate'>Category: {categoryInput === 'All' ? 'All' : categoryInput}</span>
-            <FontAwesomeIcon icon={faCaretDown} className='absolute right-1 text-black' />
+            <FontAwesomeIcon icon={faCaretDown} className={`absolute right-1 text-black ${categoryDropdown? 'rotate-180': ''}`} />
           </div>
           {categoryDropdown && (
             <div className='absolute mt-10 md:static md:mt-0 w-[140px] md:w-full border border-gray-300 rounded bg-white text-sm poetsen overflow-hidden z-20'>
@@ -137,7 +137,7 @@ const Home = () => {
             </div>
           )}
 
-          <div className='w-full h-auto border border-gray-300 rounded bg-white h-7 text-sm p-2 flex items-center poetsen relative text-gray-500 gap-1 flex-col md:flex-col '>
+          <div className='w-full h-auto border border-gray-300 rounded bg-white text-sm p-2 flex items-center poetsen relative text-gray-500 gap-1 flex-col md:flex-col '>
             <span>Price:</span>
             <div className='flex flex-row w-full gap-1'>
               <input

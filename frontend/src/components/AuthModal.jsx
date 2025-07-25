@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
+import { API_URL } from '../api';
 
 const AuthModal = ({ open, onClose, onAuthSuccess }) => {
   const [mode, setMode] = useState('login');
@@ -82,7 +83,7 @@ const AuthModal = ({ open, onClose, onAuthSuccess }) => {
           setLoading(true);
           try {
             const body = mode === 'register' ? { name, email, password } : { email, password };
-            const res = await fetch(`http://localhost:5000/api/auth/${mode}`, {
+            const res = await fetch(`${API_URL}/auth/${mode}`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(body),

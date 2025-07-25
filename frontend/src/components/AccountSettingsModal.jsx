@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { useAuth } from '../context/AuthContext';
-
+import { API_URL } from '../api';
 const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
   const [phone, setPhone] = useState(user?.settings?.phone || '');
   const [address, setAddress] = useState(user?.settings?.address || '');

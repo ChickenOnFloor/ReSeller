@@ -1,10 +1,9 @@
 import express from 'express';
 import { auth } from '../middleware/auth.js';
-import { upload } from '../middleware/upload.js';
+import { uploadMemory } from '../middleware/upload.js';
 import Product from '../models/Product.js';
 import Comment from '../models/Comment.js';
 import cloudinary from 'cloudinary';
-import fs from 'fs';
 
 const router = express.Router();
 
@@ -64,7 +63,10 @@ router.get('/:id', async (req, res) => {
       .populate('seller', 'name email avatar')
       .populate({
         path: 'comments',
-        populate: { path: 'user', select: 'name avatar' },
+        populate: [
+          { path: 'user', select: 'name avatar' },
+          { path: 'replies.user', select: 'name avatar' }
+        ]
       });
     if (!product) return res.status(404).json({ msg: 'Product not found' });
     res.json(product);
@@ -73,16 +75,24 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', auth, upload.single('image'), async (req, res) => {
+router.post('/', auth, uploadMemory.single('image'), async (req, res) => {
   try {
     const { title, description, price, category } = req.body;
     let imageUrl = '';
     if (req.file) {
-      const result = await cloudinary.v2.uploader.upload(req.file.path, {
-        folder: 'olx-products',
+      const streamifier = await import('streamifier');
+      const stream = streamifier.default.createReadStream(req.file.buffer);
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.v2.uploader.upload_stream(
+          { folder: 'olx-products' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        stream.pipe(uploadStream);
       });
       imageUrl = result.secure_url;
-      fs.unlinkSync(req.file.path);
     }
     const product = new Product({
       title,
@@ -146,7 +156,7 @@ router.post('/:id/comments/:commentId/reply', auth, async (req, res) => {
 });
 
 
-router.put('/:id', auth, upload.single('image'), async (req, res) => {
+router.put('/:id', auth, uploadMemory.single('image'), async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ msg: 'Product not found' });
@@ -157,9 +167,19 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
     if (price) product.price = price;
     if (category) product.category = category;
     if (req.file) {
-      const result = await cloudinary.v2.uploader.upload(req.file.path, { folder: 'olx-products' });
+      const streamifier = await import('streamifier');
+      const stream = streamifier.default.createReadStream(req.file.buffer);
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.v2.uploader.upload_stream(
+          { folder: 'olx-products' },
+          (error, result) => {
+            if (error) return reject(error);
+            resolve(result);
+          }
+        );
+        stream.pipe(uploadStream);
+      });
       product.image = result.secure_url;
-      fs.unlinkSync(req.file.path);
     }
     await product.save();
     res.json(product);

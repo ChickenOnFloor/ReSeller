@@ -4,13 +4,24 @@ import AuthModal from './AuthModal';
 import AccountSettingsModal from './AccountSettingsModal';
 import { useAuth } from '../context/AuthContext';
 
+const getShortName = (name) => {
+  if (!name) return '';
+  const words = name.split(' ').slice(0, 2).join(' ');
+  return words.length > 16 ? words.slice(0, 16) + '...' : words;
+};
+
 const Navbar = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { user, login } = useAuth();
+  const navRef = React.useRef(null);
+  const logoRef = React.useRef(null);
+  const sellRef = React.useRef(null);
+  const userRef = React.useRef(null);
+  const itemsRef = React.useRef([]);
+  const { user, login, loading } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -48,22 +59,22 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="w-full bg-white shadow-lg border-b sticky top-0 z-30">
+      <nav ref={navRef} className="w-full bg-white shadow-lg border-b sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0 flex items-center">
               <Link to='/' className='text-blue-600 text-3xl font-bold poetsen tracking-wider'>ReSeller</Link>
             </div>
             <div className="hidden md:flex md:items-center md:gap-4">
-              <button onClick={handleSell} className='bg-blue-600 text-white font-semibold rounded px-4 py-2 hover:bg-blue-700 transition flex items-center'>SELL</button>
-              {user ? (
-                <div className="relative" ref={dropdownRef}>
+              <button ref={el => itemsRef.current[1] = el} onClick={handleSell} className='bg-blue-600 text-white font-semibold rounded px-4 py-2 hover:bg-blue-700 transition flex items-center'>SELL</button>
+              {loading ? null : user ? (
+                <div className="relative" ref={el => itemsRef.current[2] = el}>
                   <button
                     onClick={() => setDropdownOpen((open) => !open)}
-                    className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition focus:outline-none"
+                    className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition focus:outline-none border border-blue-200"
                   >
-                    {user.avatar && <img src={user.avatar} alt='avatar' className='w-9 h-9 rounded-full object-cover' />}
-                    <span className='font-semibold text-blue-600'>{user.name}</span>
+                    {user.avatar ? <img src={user.avatar} alt='avatar' className='w-9 h-9 rounded-full object-cover' /> : <img src='/defaultAvatar.png' alt='avatar' className='w-9 h-9 rounded-full object-cover' />}
+                    <span className='font-semibold text-blue-600'>{getShortName(user.name)}</span>
                     <svg className={`w-4 h-4 ml-1 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                   </button>
                   {dropdownOpen && (
@@ -76,7 +87,7 @@ const Navbar = () => {
                   )}
                 </div>
               ) : (
-                <button onClick={() => setAuthOpen(true)} className='bg-blue-600 text-white font-semibold rounded px-4 py-2 hover:bg-blue-700 transition'>LOGIN</button>
+                <button ref={el => itemsRef.current[2] = el} onClick={() => setAuthOpen(true)} className='bg-blue-600 text-white font-semibold rounded px-4 py-2 hover:bg-blue-700 transition'>LOGIN</button>
               )}
             </div>
             <div className="flex md:hidden">
@@ -107,8 +118,8 @@ const Navbar = () => {
                   <Link to='/liked-products' className='block text-blue-600 font-semibold px-3 py-2 rounded hover:bg-blue-100 transition' onClick={() => setMobileMenu(false)}>Liked Products</Link>
                   <button onClick={() => { setSettingsOpen(true); setMobileMenu(false); }} className='w-full border border-gray-300 h-9 rounded bg-white text-blue-600 font-semibold hover:bg-blue-600 hover:text-white px-3 transition mb-1'>Account</button>
                   <button onClick={handleLogout} className='w-full text-red-600 font-semibold rounded px-4 py-2 hover:bg-red-100 transition mb-1 text-left'>Logout</button>
-                  <span className='block font-semibold text-blue-600 px-3'>{user.name}</span>
-                  {user.avatar && <img src={user.avatar} alt='avatar' className='w-9 h-9 rounded-full object-cover mx-3 my-2' />}
+                  <span className='block font-semibold text-blue-600 px-3'>{getShortName(user.name)}</span>
+                  {user.avatar ? <img src={user.avatar} alt='avatar' className='w-9 h-9 rounded-full object-cover mx-3 my-2' /> : <img src='/defaultAvatar.png' alt='avatar' className='w-9 h-9 rounded-full object-cover mx-3 my-2' />}
                 </>
               ) : (
                 <button onClick={() => { setAuthOpen(true); setMobileMenu(false); }} className='w-full bg-blue-600 text-white font-semibold rounded px-4 py-2 hover:bg-blue-700 transition mb-1'>LOGIN</button>
