@@ -104,7 +104,7 @@ Reseller/
    ```
 4. Start the backend server:
    ```bash
-   npm start
+   node server.js
    ```
    The backend will run on `http://localhost:5000` by default.
 
