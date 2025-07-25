@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/Card';
 import gsap from 'gsap';
+import { API_URL } from '../api';
 
 const PAGE_SIZE = 6;
 
@@ -25,7 +26,7 @@ const MyProducts = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('http://localhost:5000/api/products/mine', {
+      const res = await axios.get(`${API_URL}/products/mine`, {
         headers: { 'Authorization': 'Bearer ' + token },
         params: { search, page, limit: PAGE_SIZE },
       });
@@ -56,7 +57,7 @@ const MyProducts = () => {
     if (!window.confirm('Delete this product?')) return;
     setActionLoading(true);
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`, {
+      await axios.delete(`${API_URL}/products/${id}`, {
         headers: { 'Authorization': 'Bearer ' + token },
       });
       fetchProducts();
@@ -70,7 +71,7 @@ const MyProducts = () => {
   const handleSold = async (id) => {
     setActionLoading(true);
     try {
-      const res = await axios.patch(`http://localhost:5000/api/products/${id}/sold`, {}, {
+      const res = await axios.patch(`${API_URL}/products/${id}/sold`, {}, {
         headers: { 'Authorization': 'Bearer ' + token },
       });
       setProducts(products.map(p => p._id === id ? { ...p, sold: res.data.sold } : p));
@@ -110,7 +111,7 @@ const MyProducts = () => {
       formData.append('price', editData.price);
       formData.append('category', editData.category);
       if (editImage) formData.append('image', editImage);
-      const res = await axios.put(`http://localhost:5000/api/products/${editId}`, formData, {
+      const res = await axios.put(`${API_URL}/products/${editId}`, formData, {
         headers: { 'Authorization': 'Bearer ' + token },
       });
       setProducts(products.map(p => p._id === editId ? res.data : p));

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { API_URL } from '../api';
 
 const Product = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const Product = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        const res = await fetch(`${API_URL}/products/${id}`);
         if (!res.ok) throw new Error('Product not found');
         const data = await res.json();
         setProduct(data);
@@ -42,7 +43,7 @@ const Product = () => {
     }
     if (!comment.trim()) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}/comments`, {
+      const res = await fetch(`${API_URL}/products/${id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +65,7 @@ const Product = () => {
     }
     if (!reply.trim()) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}/comments/${parentId}/reply`, {
+      const res = await fetch(`${API_URL}/products/${id}/comments/${parentId}/reply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

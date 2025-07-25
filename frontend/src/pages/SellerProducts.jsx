@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import Card from '../components/Card';
 import gsap from 'gsap';
+import { API_URL } from '../api';
 
 const SellerProducts = () => {
   const { sellerId } = useParams();
@@ -15,7 +16,7 @@ const SellerProducts = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(`http://localhost:5000/api/products/seller/${sellerId}`);
+        const res = await fetch(`${API_URL}/products/seller/${sellerId}`);
         if (!res.ok) throw new Error('Failed to fetch seller products');
         const data = await res.json();
         setProducts(data);

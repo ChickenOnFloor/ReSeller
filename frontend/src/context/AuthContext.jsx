@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { API_URL } from '../api';
 
 const AuthContext = createContext();
 
@@ -9,30 +10,45 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (storedToken && storedUser) {
+    if (storedToken) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      fetchUser(storedToken);
+    } else {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
-  const login = (token, user) => {
+  const fetchUser = async (tokenToUse) => {
+    try {
+      const res = await fetch(`${API_URL}/user/me`, {
+        headers: { 'Authorization': 'Bearer ' + tokenToUse },
+      });
+      if (!res.ok) throw new Error('Failed to fetch user');
+      const data = await res.json();
+      setUser(data.user);
+    } catch (err) {
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem('token');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = (token) => {
     setToken(token);
-    setUser(user);
     localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    fetchUser(token);
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout, loading, fetchUser }}>
       {children}
     </AuthContext.Provider>
   );

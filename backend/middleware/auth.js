@@ -10,7 +10,7 @@ export const auth = async (req, res, next) => {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    req.user = await User.findById(decoded.id).select('-password').populate('likedProducts');
     if (!req.user) throw new Error('User not found');
     next();
   } catch (err) {

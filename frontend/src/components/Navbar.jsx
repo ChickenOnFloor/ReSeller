@@ -69,6 +69,7 @@ const Navbar = () => {
                   {dropdownOpen && (
                     <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded shadow-lg z-50 flex flex-col">
                       <Link to='/my-products' className='px-4 py-2 text-blue-600 hover:bg-blue-100 rounded-t transition' onClick={() => setDropdownOpen(false)}>My Products</Link>
+                      <Link to='/liked-products' className='px-4 py-2 text-blue-600 hover:bg-blue-100 transition' onClick={() => setDropdownOpen(false)}>Liked Products</Link>
                       <button onClick={() => { setSettingsOpen(true); setDropdownOpen(false); }} className='px-4 py-2 text-blue-600 hover:bg-blue-100 transition text-left'>Account</button>
                       <button onClick={handleLogout} className='px-4 py-2 text-red-600 hover:bg-red-100 rounded-b text-left transition'>Logout</button>
                     </div>
@@ -103,6 +104,7 @@ const Navbar = () => {
               {user ? (
                 <>
                   <Link to='/my-products' className='block text-blue-600 font-semibold px-3 py-2 rounded hover:bg-blue-100 transition' onClick={() => setMobileMenu(false)}>My Products</Link>
+                  <Link to='/liked-products' className='block text-blue-600 font-semibold px-3 py-2 rounded hover:bg-blue-100 transition' onClick={() => setMobileMenu(false)}>Liked Products</Link>
                   <button onClick={() => { setSettingsOpen(true); setMobileMenu(false); }} className='w-full border border-gray-300 h-9 rounded bg-white text-blue-600 font-semibold hover:bg-blue-600 hover:text-white px-3 transition mb-1'>Account</button>
                   <button onClick={handleLogout} className='w-full text-red-600 font-semibold rounded px-4 py-2 hover:bg-red-100 transition mb-1 text-left'>Logout</button>
                   <span className='block font-semibold text-blue-600 px-3'>{user.name}</span>

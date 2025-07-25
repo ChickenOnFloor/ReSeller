@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import gsap from 'gsap';
+import { useAuth } from '../context/AuthContext';
 
 const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
   const [phone, setPhone] = useState(user?.settings?.phone || '');
@@ -14,6 +15,7 @@ const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
   const saveBtnRef = useRef(null);
   const uploadBtnRef = useRef(null);
   const closeBtnRef = useRef(null);
+  const { token, fetchUser } = useAuth();
 
   useEffect(() => {
     if (open && overlayRef.current && modalRef.current) {
@@ -64,8 +66,7 @@ const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
               setError('');
               setSuccess('');
               try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:5000/api/user/settings', {
+                const res = await fetch(`${API_URL}/user/settings`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.msg || 'Update failed');
                 setSuccess('Settings updated!');
-                onUserUpdate && onUserUpdate({ ...user, settings: data.settings });
+                fetchUser(token);
               } catch (err) {
                 setError(err.message);
               } finally {
@@ -93,10 +94,9 @@ const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
               setError('');
               setSuccess('');
               try {
-                const token = localStorage.getItem('token');
                 const formData = new FormData();
                 formData.append('avatar', avatar);
-                const res = await fetch('http://localhost:5000/api/user/avatar', {
+                const res = await fetch(`${API_URL}/user/avatar`, {
                   method: 'PUT',
                   headers: {
                     'Authorization': 'Bearer ' + token,
@@ -106,7 +106,7 @@ const AccountSettingsModal = ({ open, onClose, user, onUserUpdate }) => {
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.msg || 'Avatar update failed');
                 setSuccess('Avatar updated!');
-                onUserUpdate && onUserUpdate({ ...user, avatar: data.avatar });
+                fetchUser(token);
               } catch (err) {
                 setError(err.message);
               } finally {

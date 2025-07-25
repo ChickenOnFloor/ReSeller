@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Card from '../components/Card';
 import axios from 'axios';
+import { API_URL } from '../api';
 
 const ProductUpload = () => {
   const { user, token } = useAuth();
@@ -47,7 +48,7 @@ const ProductUpload = () => {
       formData.append('price', price);
       formData.append('category', category);
       formData.append('image', image);
-      const res = await axios.post('http://localhost:5000/api/products', formData, {
+      const res = await axios.post(`${API_URL}/products`, formData, {
         headers: {
           'Authorization': 'Bearer ' + token,
         },

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 import Card from '../components/Card'
 import gsap from 'gsap'
+import { API_URL } from '../api';
 
 const sortOptions = [
   { label: 'Newest', value: 'createdAt-desc' },
@@ -34,7 +35,7 @@ const Home = () => {
       setError(null);
       try {
         const [sortBy, order] = sort.split('-');
-        let url = `http://localhost:5000/api/products?sortBy=${sortBy}&order=${order}`;
+        let url = `${API_URL}/products?sortBy=${sortBy}&order=${order}`;
         if (category !== 'All') url += `&category=${encodeURIComponent(category)}`;
         if (priceRange[0] !== '') url += `&min=${priceRange[0]}`;
         if (priceRange[1] !== '') url += `&max=${priceRange[1]}`;
